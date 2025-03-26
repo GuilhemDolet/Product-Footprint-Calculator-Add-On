@@ -8,9 +8,8 @@ packages = [{include = "EPREL_scrapper", from = "src"}]
 
 [tool.poetry.dependencies]
 python = "^3.12"
-selenium = "^4.29.0"
 requests = "^2.32.3"
-webdriver-manager = "^4.0.2"
+
 
 
 [build-system]
