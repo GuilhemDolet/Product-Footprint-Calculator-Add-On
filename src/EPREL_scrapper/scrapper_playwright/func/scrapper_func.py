@@ -13,6 +13,8 @@ def run_playwright_scrapper(main_url):
         return browser, page
 
 def parsing_waterheating_pages(xpath: str, page, list_url_to_grab):
+    
+    delay = random.uniform(1, 3)  # Entre 1 et 3 secondes
     # compteur de fiche produit disponible
     product_nbr = 0
     # Bouton pour cliquer sur "page suivante"
@@ -33,9 +35,10 @@ def parsing_waterheating_pages(xpath: str, page, list_url_to_grab):
                 print(f"Clic effectué sur le bouton {i + 1}")
                 print(f"nombre de produit trouvés : {product_nbr}")
                 # délai aléatoire entre chaque clic
-                delay = random.uniform(1, 3)  # Entre 1 et 3 secondes
                 time.sleep(delay)  # Pause aléatoire entre les clics
                 get_european_energy_label(page)
+                time.sleep(delay)
+                get_product_sheet(page)
                 time.sleep(delay)
                 page.go_back(timeout=10000)
                 time.sleep(delay)
@@ -63,7 +66,7 @@ def get_european_energy_label(page):
     # Récupérer l'URL de l'image depuis la balise <img>
     img_src = page.get_attribute("img[alt='Label']", "src")
     # Récupérer le Label_XXXXXXX de l'image pour le passer en nom du fichier à stocker et pour garder son ID
-    label_id_eprel = regex_for_id(img_src)
+    label_id_eprel = regex_for_id(img_src, "Label")
 
     if img_src:
         img_url = f"{base_url}{img_src}"  # Construire l'URL complète
@@ -79,10 +82,9 @@ def get_european_energy_label(page):
     else:
         print("Impossible de récupérer l'URL de l'image.")
  
+def regex_for_id(url, inside_regex):
 
-def regex_for_id(url):
-
-    pattern = r'Label_\d{7}'
+    pattern = fr'{inside_regex}_\d{{7}}'
     match = re.search(pattern, url)
 
     if match:
@@ -91,12 +93,29 @@ def regex_for_id(url):
         return None
 
 
+def get_product_sheet(page):
+    page.locator("//span[contains(@class, 'ecl-accordion__toggle-indicator') and  following-sibling::span[contains(text(), 'Fiche d’information sur le produit')]]").click()
+    locator = page.locator("//span[contains(text(), 'Autres langues')]")
+    locator.wait_for(state="visible")  # Attendre la visibilité
+    locator.click()
+    with page.expect_popup() as popup_info:
+        télécharger_buton = page.locator("(//a[.//span[text()='Télécharger']])[7]")  # Remplace par le bon sélecteur
+        télécharger_buton.click()
+    time.sleep(2)
+    pdf_page = popup_info.value  # Récupère la nouvelle page (liseuse PDF)
+    pdf_page.wait_for_load_state("load")
+    pdf_url = pdf_page.url
+    product_sheet_id = regex_for_id(url=pdf_url, inside_regex="Fiche")
 
-
-
-    # image_link = page.locator('a.ecl-link:has-text("Télécharger l’étiquette à imprimer")')
-    # with page.expect_download() as download_object : 
-    #     image_link.click()
-    # picture_file = download_object.value
-    # picture_file.save_as("src/data/european_energy_label")
-    
+    if pdf_url:
+        pdf_response = requests.get(pdf_url)
+        if pdf_response.status_code == 200:
+            file_path = f"src/EPREL_scrapper/data/product_sheet_document/{product_sheet_id}.pdf"
+            with open(file_path, "wb") as f:
+                f.write(pdf_response.content)
+            print(f"PDF {product_sheet_id} a été téléchargé")
+        else:
+            print("impossible de télécharger le PDF")
+        pdf_page.close()
+    else:
+        print("pas de lien vers le PDF récupéré")
