@@ -9,6 +9,7 @@ packages = [{include = "EPREL_scrapper", from = "src"}]
 [tool.poetry.dependencies]
 python = "^3.12"
 requests = "^2.32.3"
+playwright = "^1.51.0"
 
 
 
