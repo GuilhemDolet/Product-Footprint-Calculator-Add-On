@@ -2,7 +2,7 @@
 
 ## Work in progress :
 
-### If you want to test : 
+### If you want to test the scrapper localy : 
 
 - clone the repo
 - Install Poetry (if not already installed):
