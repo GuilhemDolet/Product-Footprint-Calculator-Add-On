@@ -38,9 +38,15 @@ def parsing_waterheating_pages(xpath: str, page, list_url_to_grab):
                 print(f"nombre de produit trouvés : {product_nbr}")
                 # délai aléatoire entre chaque clic
                 time.sleep(delay)  # Pause aléatoire entre les clics
-                get_european_energy_label(page)
+                try :
+                    get_european_energy_label(page)
+                except:
+                    pass
                 time.sleep(delay)
-                get_product_sheet(page)
+                try :
+                    get_product_sheet(page)
+                except :
+                    pass
                 time.sleep(delay)
                 page.go_back(timeout=10000)
                 if nombre_de_page > 0 :
