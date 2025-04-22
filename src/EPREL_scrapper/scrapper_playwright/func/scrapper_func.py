@@ -20,7 +20,9 @@ def parsing_waterheating_pages(xpath: str, page, list_url_to_grab):
     # Bouton pour cliquer sur "page suivante"
     next_page_button = page.locator("text=Suivante")
 
-    while next_page_button.is_visible():
+    # while next_page_button.is_visible():
+    nombre_de_page = 0
+    while nombre_de_page < 5:
          # Bouton pour cliquer sur "formations"
         informations_buttons = page.locator(xpath)
         buttons_nbr = informations_buttons.count()
@@ -41,11 +43,16 @@ def parsing_waterheating_pages(xpath: str, page, list_url_to_grab):
                 get_product_sheet(page)
                 time.sleep(delay)
                 page.go_back(timeout=10000)
+                if nombre_de_page > 0 :
+                    for nombre in range(nombre_de_page):
+                        next_page_button.click(timeout=10000)
                 time.sleep(delay)
+                
             else:
                 print(f"Le bouton {i + 1} est invisible ou non interactif, saut du clic.")
-
-        next_page_button.click(timeout=10000)
+        nombre_de_page += 1
+        for nombre in range(nombre_de_page):
+            next_page_button.click(timeout=10000)
 
 def intercept_request(request, list_url_to_grab):
     
@@ -119,3 +126,47 @@ def get_product_sheet(page):
         pdf_page.close()
     else:
         print("pas de lien vers le PDF récupéré")
+
+
+
+def testing_parsing(xpath: str, page, list_url_to_grab):
+    
+    delay = random.uniform(1, 3)  # Entre 1 et 3 secondes
+    # compteur de fiche produit disponible
+    product_nbr = 0
+    # Bouton pour cliquer sur "page suivante"
+    next_page_button = page.locator("text=Suivante")
+
+    # while next_page_button.is_visible():
+    nombre_de_page = 0
+    while nombre_de_page < 5:
+         # Bouton pour cliquer sur "formations"
+        informations_buttons = page.locator(xpath)
+        buttons_nbr = informations_buttons.count()
+        # current_url = page.url()
+        print(f"{buttons_nbr} bouttons trouvés sur la page {page.url}")
+
+        for i in range(buttons_nbr):
+            print(f"je clique sur le bouton {i+1} / {buttons_nbr}")
+            if informations_buttons.nth(i).is_visible():
+                informations_buttons.nth(i).click(timeout=60000)
+                product_nbr += 1
+                print(f"Clic effectué sur le bouton {i + 1}")
+                print(f"nombre de produit parsés : {product_nbr}")
+                # délai aléatoire entre chaque clic
+                # time.sleep(delay)  # Pause aléatoire entre les clics
+                # get_european_energy_label(page)
+                # time.sleep(delay)
+                # get_product_sheet(page)
+                # time.sleep(delay)
+                page.go_back(timeout=10000)
+                if nombre_de_page > 0 :
+                    for nombre in range(nombre_de_page):
+                        next_page_button.click(timeout=10000)
+                time.sleep(delay)
+                
+            else:
+                print(f"Le bouton {i + 1} est invisible ou non interactif, saut du clic.")
+        nombre_de_page += 1
+        for nombre in range(nombre_de_page):
+            next_page_button.click(timeout=10000)
