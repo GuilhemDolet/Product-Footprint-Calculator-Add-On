@@ -70,6 +70,8 @@ def intercept_request(request, list_url_to_grab):
         else: 
             print(referer)
             list_url_to_grab.append(referer)
+            
+    return list_url_to_grab
 
 def get_european_energy_label(page):
 
