@@ -1,5 +1,5 @@
 from playwright.sync_api import sync_playwright
-from EPREL_scrapper.scrapper_playwright.func.scrapper_func import parsing_waterheating_pages, intercept_request, testing_parsing
+from EPREL_scrapper.scrapper_playwright.func.scrapper_func import parsing_waterheating_pages, intercept_request, testing_parsing, save_url_list
 
 list_url_to_grab = []
 
@@ -26,4 +26,5 @@ with sync_playwright() as p:
 
     browser.close()
 
-print("URLs collectées :", list_url_to_grab, len(list_url_to_grab))
+# print("URLs collectées :", list_url_to_grab, len(list_url_to_grab))
+save_url_list(list_url_to_grab)
