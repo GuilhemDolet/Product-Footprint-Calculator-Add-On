@@ -1,8 +1,10 @@
 from playwright.sync_api import sync_playwright
 import re
+import os
 import random
 import time
 import requests
+import json
 
 def run_playwright_scrapper(main_url):
 
@@ -134,6 +136,13 @@ def get_product_sheet(page):
     else:
         print("pas de lien vers le PDF récupéré")
 
+def save_url_list(list_url_to_grab):
+
+    output_folder = "src/EPREL_scrapper/data"
+    output_path = os.path.join(output_folder, "urls.json")
+
+    with open(output_path, "w", encoding="utf-8") as f:
+        json.dump(list_url_to_grab, f, indent=2)
 
 
 def testing_parsing(xpath: str, page, list_url_to_grab):
@@ -146,7 +155,7 @@ def testing_parsing(xpath: str, page, list_url_to_grab):
 
     # while next_page_button.is_visible():
     nombre_de_page = 0
-    while nombre_de_page < 5:
+    while nombre_de_page < 1:
          # Bouton pour cliquer sur "formations"
         informations_buttons = page.locator(xpath)
         buttons_nbr = informations_buttons.count()
