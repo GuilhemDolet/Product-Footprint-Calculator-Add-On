@@ -26,4 +26,4 @@ with sync_playwright() as p:
 
     browser.close()
 
-print("URLs collectées :", list_url_to_grab, list_url_to_grab.count())
+print("URLs collectées :", list_url_to_grab, len(list_url_to_grab))
