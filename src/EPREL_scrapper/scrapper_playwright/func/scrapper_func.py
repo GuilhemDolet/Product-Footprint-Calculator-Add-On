@@ -71,6 +71,7 @@ def intercept_request(request, list_url_to_grab):
             print(referer)
             list_url_to_grab.append(referer)
 
+
 def get_european_energy_label(page):
 
     # URL de base du site
