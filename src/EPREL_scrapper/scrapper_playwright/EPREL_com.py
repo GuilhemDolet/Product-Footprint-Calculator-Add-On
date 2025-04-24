@@ -22,7 +22,7 @@ with sync_playwright() as p:
         pass
     # informations_buttons = page.locator("//eui-block-content/div/app-search-result-item/article/div[1]/div/div/div[3]/div/button")
     
-    parsing_waterheating_pages("//eui-block-content/div/app-search-result-item/article/div[1]/div/div/div[3]/div/button", page, list_url_to_grab)
+    testing_parsing("//eui-block-content/div/app-search-result-item/article/div[1]/div/div/div[3]/div/button", page, list_url_to_grab)
 
     browser.close()
 
