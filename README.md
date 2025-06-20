@@ -25,34 +25,4 @@
 
 
 ## Architecture 
-
-Product-Footprint-Calculator-Add-On/
-├── poetry.lock
-├── pyproject.toml
-├── README.md
-├── test.py
-├── infrastructure/
-├── src/
-│   ├── api_client/
-│   │   ├── build_ndjson.py
-│   │   ├── call_api_eprel.py
-│   │   ├── test_api.py
-│   │   ├── data/
-│   │   │   ├── bronze/
-│   │   │   │   └── eprel_waterheaters.ndjson
-│   │   │   ├── raw/
-│   │   │   ├── european_energy_label/
-│   │   │   └── product_sheet_document/
-│   │   └── func/
-│   │       ├── flatten_json.py
-│   │ 
-│   ├── EPREL_scrapper/
-│   │   ├── data/
-│   │   │   ├── urls.json
-│   │   │   ├── european_energy_label/
-│   │   │   └── product_sheet_document/
-    │   ├── scrapper_playwright/
-    │   │   ├── EPREL_com.py
-    │   │   ├── test_scrapper.py
-    │   │   └── func/
-│   └── utils/
+<pre lang="markdown"> ```mermaid graph TD root[Product-Footprint-Calculator-Add-On/] root --> poetry[poetry.lock] root --> pyproject[pyproject.toml] root --> readme[README.md] root --> test[test.py] root --> infrastructure[infrastructure/] root --> src[src/] src --> api_client[api_client/] src --> eprel_scrapper[EPREL_scrapper/] src --> utils[utils/] api_client --> build[build_ndjson.py] api_client --> call[call_api_eprel.py] api_client --> testapi[test_api.py] api_client --> func1[func/] api_client --> data1[data/] func1 --> flatten[flatten_json.py] data1 --> bronze[bronze/] data1 --> raw[raw/] data1 --> label1[european_energy_label/] data1 --> sheet1[product_sheet_document/] bronze --> eprel[eprel_waterheaters.ndjson] eprel_scrapper --> data2[data/] eprel_scrapper --> scrapper[scrapper_playwright/] data2 --> urls[urls.json] data2 --> label2[european_energy_label/] data2 --> sheet2[product_sheet_document/] scrapper --> com[EPREL_com.py] scrapper --> testscrap[test_scrapper.py] scrapper --> func2[func/] ``` </pre>
