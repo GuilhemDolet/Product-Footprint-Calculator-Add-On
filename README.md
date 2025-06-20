@@ -25,3 +25,36 @@
 
 
 ## Architecture 
+```bash
+Product-Footprint-Calculator-Add-On/
+├── poetry.lock
+├── pyproject.toml
+├── README.md
+├── test.py
+├── infrastructure/
+├── src/
+│   ├── api_client/
+│   │   ├── build_ndjson.py
+│   │   ├── call_api_eprel.py
+│   │   ├── test_api.py
+│   │   ├── data/
+│   │   │   ├── bronze/
+│   │   │   │   └── eprel_waterheaters.ndjson
+│   │   │   ├── raw/
+│   │   │   ├── european_energy_label/
+│   │   │   └── product_sheet_document/
+│   │   └── func/
+│   │       ├── flatten_json.py
+│   │ 
+│   ├── EPREL_scrapper/
+│   │   ├── data/
+│   │   │   ├── urls.json
+│   │   │   ├── european_energy_label/
+│   │   │   └── product_sheet_document/
+|   │   ├── scrapper_playwright/
+|   │   │   ├── EPREL_com.py
+|   │   │   ├── test_scrapper.py
+|   │   │   └── func/
+│   └── utils/
+
+```
