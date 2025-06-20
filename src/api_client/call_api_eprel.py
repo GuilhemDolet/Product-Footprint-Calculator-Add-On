@@ -15,11 +15,11 @@ with open("src/EPREL_scrapper/data/urls.json", "r") as f:
     urls = json.load(f)
 
 for url in urls : 
-    product_id = url[-7:]
-    builded_url = f"{base_url}{product_id}"
+    product_id = url[-7:] # on récupère les 7 derniers caractères de l'url qui correspondent à l'id du produit
+    builded_url = f"{base_url}{product_id}" # on construit l'url de l'api en concaténant l'url de base et l'id du produit
 
     try:
-
+        
         response = requests.get(builded_url)
         print("ok")
         if response.status_code == 200 :

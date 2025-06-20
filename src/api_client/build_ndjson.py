@@ -1,32 +1,11 @@
 from api_client.func.flatten_json import flat_my_json
 import os
 import json
+# Script pour nettoyer les données de l'API EPREL et les enregistrer en format NDJSON grace à la fonction flat_my_json
 
 raw_folder = "src/api_client/data/raw"
 output_ndjson_folder = "src/api_client/data/bronze/eprel_waterheaters.ndjson"
 
-fields_to_keep = [
-    "eprelRegistrationNumber",
-    "country",
-    "city",
-    "postalCode",
-    "serviceName",
-    "webSiteURL",
-    "email",
-    "thermostatSettings",
-    "energyClass",
-    "onMarketStartDate",
-    "declaredLoadProfileWaterHeatingAnnualEnergyGJ",
-    "complexType",
-    "isDeclaredLoadProfile",
-    "waterHeatingAnnualElectricityCons",
-    "waterHeatingEfficiency",
-    "type",
-    "waterHeatingAnnualEnergyGJ",
-    "modelIdentifier",
-    "supplierOrTrademark",
-    "declaredLoadProfileType"
-]
 
 os.makedirs(os.path.dirname(output_ndjson_folder), exist_ok=True)
 
