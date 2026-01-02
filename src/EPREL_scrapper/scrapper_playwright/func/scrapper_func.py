@@ -151,11 +151,11 @@ def testing_parsing(xpath: str, page, list_url_to_grab):
     # compteur de fiche produit disponible
     product_nbr = 0
     # Bouton pour cliquer sur "page suivante"
-    next_page_button = page.locator("text=Suivante")
+    next_page_button = page.locator("text=Suivant")
 
     # while next_page_button.is_visible():
     nombre_de_page = 0
-    while nombre_de_page < 1:
+    while nombre_de_page < 3:
          # Bouton pour cliquer sur "formations"
         informations_buttons = page.locator(xpath)
         buttons_nbr = informations_buttons.count()
@@ -176,9 +176,11 @@ def testing_parsing(xpath: str, page, list_url_to_grab):
                 # get_product_sheet(page)
                 # time.sleep(delay)
                 page.go_back(timeout=10000)
-                if nombre_de_page > 0 :
-                    for nombre in range(nombre_de_page):
-                        next_page_button.click(timeout=10000)
+
+                # plus besoin de revenir à la page courante avec le code ci-dessous car le site a fixé le problème de perte de position lors du retour arrière
+                # if nombre_de_page > 0 :
+                #     for nombre in range(nombre_de_page):
+                #         next_page_button.click(timeout=10000)
                 time.sleep(delay)
                 
             else:
