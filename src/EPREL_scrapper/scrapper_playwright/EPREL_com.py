@@ -22,7 +22,8 @@ with sync_playwright() as p:
         pass
     # informations_buttons = page.locator("//eui-block-content/div/app-search-result-item/article/div[1]/div/div/div[3]/div/button")
     
-    testing_parsing("//eui-block-content/div/app-search-result-item/article/div[1]/div/div/div[3]/div/button", page, list_url_to_grab)
+    # testing_parsing("//eui-block-content/div/app-search-result-item/article/div[1]/div/div/div[3]/div/button", page, list_url_to_grab)
+    testing_parsing("//eui-card-header-right-content[@class='ecl-u-d-none ecl-u-d-m-block eui-card-header__right-content']/button[@class='ecl-button ecl-button--primary']", page, list_url_to_grab)
 
     browser.close()
 
