@@ -75,28 +75,66 @@ def intercept_request(request, list_url_to_grab):
 
 
 def get_european_energy_label(page):
-
-    # URL de base du site
-    base_url = "https://eprel.ec.europa.eu"
-
-    # Récupérer l'URL de l'image depuis la balise <img>
-    img_src = page.get_attribute("img[alt='Label']", "src")
-    # Récupérer le Label_XXXXXXX de l'image pour le passer en nom du fichier à stocker et pour garder son ID
-    label_id_eprel = regex_for_id(img_src, "Label")
-
-    if img_src:
-        img_url = f"{base_url}{img_src}"  # Construire l'URL complète
-        # Télécharger l'image
-        img_response = requests.get(img_url)
-        if img_response.status_code == 200:
-            file_path = f"src/EPREL_scrapper/data/european_energy_label/{label_id_eprel}.svg"
-            with open(file_path, "wb") as f: #image récupérée en vectoriel .svg 
-                f.write(img_response.content)
-            print("Image téléchargée avec succès")
+    try:
+        # Récupérer tous les éléments avec la classe ecl-link--standalone
+        all_buttons = page.locator("a.ecl-link--standalone")
+        buttons_count = all_buttons.count()
+        
+        print(f"Nombre de boutons trouvés : {buttons_count}")
+        
+        target_button = None
+        
+        for i in range(buttons_count):
+            button = all_buttons.nth(i)
+            button_text = button.text_content().strip()
+            
+            # Normaliser l'apostrophe courbe (U+2019) en apostrophe droite (U+0027)
+            normalized_text = button_text.replace("\u2019", "'")
+            target_text = "Télécharger l'étiquette à imprimer"
+            
+            if normalized_text == target_text:
+                print(f"✓ Bouton trouvé à l'index {i}")
+                target_button = button
+                break
+        
+        if not target_button:
+            print("✗ Aucun bouton trouvé")
+            return
+        
+        target_button.wait_for(state="visible", timeout=10000)
+        print("Bouton visible, clic en cours...")
+        
+        # Intercepter la nouvelle page/popup
+        with page.context.expect_page() as new_page_info:
+            target_button.click()
+        
+        new_page = new_page_info.value
+        new_page.wait_for_load_state("load")
+        
+        pdf_url = new_page.url
+        print(f"URL de l'étiquette : {pdf_url}")
+        
+        # Télécharger le PDF
+        pdf_response = requests.get(pdf_url, timeout=10000)
+        if pdf_response.status_code == 200:
+            label_id_eprel = regex_for_id(pdf_url, "Label")
+            if not label_id_eprel:
+                label_id_eprel = "label_" + str(int(time.time()))
+            
+            # Créer le dossier s'il n'existe pas
+            os.makedirs("src/EPREL_scrapper/data/european_energy_label", exist_ok=True)
+            
+            file_path = f"src/EPREL_scrapper/data/european_energy_label/{label_id_eprel}.pdf"
+            with open(file_path, "wb") as f:
+                f.write(pdf_response.content)
+            print(f"Energy label PDF {label_id_eprel} downloaded successfully")
         else:
-            print("Erreur lors du téléchargement de l'image :", img_response.status_code)
-    else:
-        print("Impossible de récupérer l'URL de l'image.")
+            print(f"Erreur HTTP {pdf_response.status_code} lors du téléchargement")
+        
+        new_page.close()
+            
+    except Exception as e:
+        print(f"Error downloading energy label: {e}")
  
 def regex_for_id(url, inside_regex):
 
@@ -170,8 +208,8 @@ def testing_parsing(xpath: str, page, list_url_to_grab):
                 print(f"Clic effectué sur le bouton {i + 1}")
                 print(f"nombre de produit parsés : {product_nbr}")
                 # délai aléatoire entre chaque clic
-                # time.sleep(delay)  # Pause aléatoire entre les clics
-                # get_european_energy_label(page)
+                time.sleep(delay)  # Pause aléatoire entre les clics
+                get_european_energy_label(page)
                 # time.sleep(delay)
                 # get_product_sheet(page)
                 # time.sleep(delay)
