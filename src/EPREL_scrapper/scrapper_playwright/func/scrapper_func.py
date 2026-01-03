@@ -148,7 +148,8 @@ def regex_for_id(url, inside_regex):
 
 
 def get_product_sheet(page):
-    page.locator("//span[contains(@class, 'ecl-accordion__toggle-indicator') and  following-sibling::span[contains(text(), 'Fiche d’information sur le produit')]]").click()
+    # Plus besoin de cliquer sur l'accordéon avec le nouveau site
+    #  page.locator("//span[contains(@class, 'ecl-accordion__toggle-indicator') and  following-sibling::span[contains(text(), 'Fiche d’information sur le produit')]]").click()
     locator = page.locator("//span[contains(text(), 'Autres langues')]")
     locator.wait_for(state="visible")  # Attendre la visibilité
     locator.click()
@@ -210,9 +211,9 @@ def testing_parsing(xpath: str, page, list_url_to_grab):
                 # délai aléatoire entre chaque clic
                 time.sleep(delay)  # Pause aléatoire entre les clics
                 get_european_energy_label(page)
-                # time.sleep(delay)
-                # get_product_sheet(page)
-                # time.sleep(delay)
+                time.sleep(delay)
+                get_product_sheet(page)
+                time.sleep(delay)
                 page.go_back(timeout=10000)
 
                 # plus besoin de revenir à la page courante avec le code ci-dessous car le site a fixé le problème de perte de position lors du retour arrière
