@@ -14,10 +14,10 @@ def parsing_waterheating_pages(xpath: str, page, list_url_to_grab):
     product_nbr = 0
     # Bouton pour cliquer sur "page suivante"
     next_page_button = page.locator("text=Suivant")
-
-    # while next_page_button.is_visible():
     nombre_de_page = 0
-    while nombre_de_page < 5:
+
+    while next_page_button.is_visible():
+    # while nombre_de_page < 5:
         # Bouton pour cliquer sur "plus d'informations"
         # Attendre que les boutons se chargent
         informations_buttons = page.locator(xpath)
@@ -75,7 +75,6 @@ def intercept_request(request, list_url_to_grab):
         else: 
             print(referer)
             list_url_to_grab.append(referer)
-
 
 def get_european_energy_label(page):
     try:
@@ -140,8 +139,18 @@ def get_european_energy_label(page):
         print(f"Error downloading energy label: {e}")
  
 def regex_for_id(url, inside_regex):
-
-    pattern = fr'{inside_regex}_\d{{7}}'
+    """
+    Extrait un identifiant au format KEYWORD_DIGITS de l'URL ou du texte donné.
+    
+    Args:
+        url (str): L'URL ou le texte contenant l'ID
+        inside_regex (str): Le préfixe à chercher (ex: "Label", "Fiche")
+    
+    Returns:
+        str: L'identifiant trouvé (ex: "Label_69558", "Fiche_12345_EN") ou None
+    """
+    # Accepte un nombre variable de chiffres (au moins 1)
+    pattern = fr'{inside_regex}_\d+'
     match = re.search(pattern, url)
 
     if match:
@@ -162,7 +171,12 @@ def get_product_sheet(page):
     pdf_page = popup_info.value  # Récupère la nouvelle page (liseuse PDF)
     pdf_page.wait_for_load_state("load")
     pdf_url = pdf_page.url
+    print(f"URL fiche produit : {pdf_url}")
     product_sheet_id = regex_for_id(url=pdf_url, inside_regex="Fiche")
+        # Vérifier que product_sheet_id n'est pas None
+    if not product_sheet_id:
+        product_sheet_id = "fiche_" + str(int(time.time()))
+        print(f"⚠ ID non trouvé, utilisation de l'ID généré : {product_sheet_id}")
 
     if pdf_url:
         pdf_response = requests.get(pdf_url)
@@ -188,7 +202,7 @@ def save_url_list(list_url_to_grab):
     with open(output_path, "w", encoding="utf-8") as f:
         json.dump(list_url_to_grab, f, indent=2)
 
-
+# uttilisé uniquement pour tester
 def testing_parsing(xpath: str, page, list_url_to_grab):
     
     delay = random.uniform(1, 3)  # Entre 1 et 3 secondes
