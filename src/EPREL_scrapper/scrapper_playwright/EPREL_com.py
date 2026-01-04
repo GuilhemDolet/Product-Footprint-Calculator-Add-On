@@ -1,5 +1,6 @@
 from playwright.sync_api import sync_playwright
 from EPREL_scrapper.scrapper_playwright.func.scrapper_func import parsing_waterheating_pages, intercept_request, testing_parsing, save_url_list
+import time
 
 list_url_to_grab = []
 
@@ -20,10 +21,28 @@ with sync_playwright() as p:
         page.locator("text=Accept all cookies").click(timeout=15000)
     except:
         pass
-    # informations_buttons = page.locator("//eui-block-content/div/app-search-result-item/article/div[1]/div/div/div[3]/div/button")
     
-    # testing_parsing("//eui-block-content/div/app-search-result-item/article/div[1]/div/div/div[3]/div/button", page, list_url_to_grab)
-    testing_parsing("//eui-card-header-right-content[@class='ecl-u-d-none ecl-u-d-m-block eui-card-header__right-content']/button[@class='ecl-button ecl-button--primary']", page, list_url_to_grab)
+    # FILTRAGE PAR CHAMP DE SAISIE 
+    # Attendre que le champ se charge
+    min_energy_input = page.locator("//input[@aria-label='waterHeatingAnnualEnergyGJMin']").nth(1)  # ou .second
+    min_energy_input.wait_for(state="visible", timeout=10000)
+    print("Champ de saisie trouvé")
+    print(f"Valeur initiale : {min_energy_input.input_value()}")
+
+    # Remplir le champ avec 8
+    min_energy_input.clear()
+    min_energy_input.fill("8")
+    min_energy_input.press("Enter")
+    print("Valeur définie à 8")
+
+    time.sleep(2)
+    # Attendre que les résultats se mettent à jour
+    page.wait_for_load_state("load")
+    time.sleep(2)
+    print(f"Valeur après modification : {min_energy_input.input_value()}")
+    
+
+    parsing_waterheating_pages("//eui-card-header-right-content[@class='ecl-u-d-none ecl-u-d-m-block eui-card-header__right-content']/button[@class='ecl-button ecl-button--primary']", page, list_url_to_grab)
 
     browser.close()
 
